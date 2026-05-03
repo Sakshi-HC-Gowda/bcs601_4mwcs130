@@ -4,504 +4,241 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BCS601_4MW23CS130 | Expense Tracker</title>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0e0e12;
-            --surface: #16161e;
-            --card: #1c1c28;
-            --border: #2a2a3d;
-            --accent: #7c6af7;
-            --accent-glow: rgba(124, 106, 247, 0.18);
-            --green: #3ecf8e;
-            --red: #f87272;
-            --amber: #fbbf24;
-            --text: #e8e8f0;
-            --muted: #6b6b80;
-            --font-display: 'Syne', sans-serif;
-            --font-mono: 'DM Mono', monospace;
+            --bg:        #f5f6fa;
+            --white:     #ffffff;
+            --border:    #e8eaf0;
+            --accent:    #16a34a;
+            --accent-lt: #dcfce7;
+            --accent-mid:#bbf7d0;
+            --blue:      #3b82f6;
+            --blue-lt:   #eff6ff;
+            --amber:     #d97706;
+            --amber-lt:  #fef3c7;
+            --text:      #111827;
+            --text-2:    #374151;
+            --muted:     #9ca3af;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+            --shadow:    0 4px 16px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04);
+            --radius:    14px;
+            --font: 'Plus Jakarta Sans', sans-serif;
+            --mono: 'JetBrains Mono', monospace;
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: var(--font-display);
-            min-height: 100vh;
-            background-image:
-                radial-gradient(ellipse 60% 40% at 80% 10%, rgba(124,106,247,0.08) 0%, transparent 60%),
-                radial-gradient(ellipse 40% 30% at 10% 80%, rgba(62,207,142,0.05) 0%, transparent 50%);
-        }
+        body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; }
 
         header {
-            padding: 28px 40px;
+            background: var(--white);
             border-bottom: 1px solid var(--border);
+            padding: 0 40px;
+            height: 64px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            box-shadow: var(--shadow-sm);
         }
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo-icon { width: 36px; height: 36px; background: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .logo-text h1 { font-size: 16px; font-weight: 700; line-height: 1.2; }
+        .logo-text span { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+        .header-date { font-family: var(--mono); font-size: 12px; color: var(--muted); background: var(--bg); border: 1px solid var(--border); padding: 6px 14px; border-radius: 100px; }
 
-        .logo {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
+        main { max-width: 1000px; margin: 0 auto; padding: 36px 24px 60px; }
 
-        .logo-tag {
-            font-family: var(--font-mono);
-            font-size: 10px;
-            color: var(--accent);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        .logo-title {
-            font-size: 22px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-        }
-
-        .logo-title span { color: var(--accent); }
-
-        .date-badge {
-            font-family: var(--font-mono);
-            font-size: 12px;
-            color: var(--muted);
-            background: var(--surface);
-            border: 1px solid var(--border);
-            padding: 6px 14px;
-            border-radius: 100px;
-        }
-
-        main {
-            max-width: 960px;
-            margin: 0 auto;
-            padding: 40px 24px;
-        }
-
-        /* STATS GRID */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            margin-bottom: 40px;
-        }
-
-        .stat-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 24px;
-            position: relative;
-            overflow: hidden;
-            transition: border-color 0.2s;
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 2px;
-        }
-
-        .stat-card.total::before { background: var(--accent); }
-        .stat-card.today::before { background: var(--green); }
-        .stat-card.week::before { background: var(--amber); }
-
-        .stat-card:hover { border-color: var(--accent); }
-
-        .stat-label {
-            font-family: var(--font-mono);
-            font-size: 11px;
-            color: var(--muted);
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            margin-bottom: 12px;
-        }
-
-        .stat-value {
-            font-size: 32px;
-            font-weight: 800;
-            letter-spacing: -1px;
-            display: flex;
-            align-items: baseline;
-            gap: 4px;
-        }
-
-        .stat-value .currency {
-            font-size: 18px;
-            color: var(--muted);
-            font-weight: 400;
-        }
-
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 28px; }
+        .stat-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 24px; box-shadow: var(--shadow-sm); transition: box-shadow 0.2s, transform 0.2s; }
+        .stat-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+        .stat-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+        .stat-label { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; }
+        .stat-badge { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+        .stat-card.total .stat-badge { background: var(--accent-lt); }
+        .stat-card.today .stat-badge { background: var(--blue-lt); }
+        .stat-card.week  .stat-badge { background: var(--amber-lt); }
+        .stat-value { font-size: 30px; font-weight: 800; line-height: 1; letter-spacing: -1px; }
         .stat-card.total .stat-value { color: var(--accent); }
-        .stat-card.today .stat-value { color: var(--green); }
-        .stat-card.week .stat-value { color: var(--amber); }
+        .stat-card.today .stat-value { color: var(--blue); }
+        .stat-card.week  .stat-value { color: var(--amber); }
+        .stat-currency { font-size: 18px; font-weight: 500; opacity: 0.6; margin-right: 2px; }
 
-        /* FORM */
-        .add-section {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 32px;
-            margin-bottom: 40px;
-        }
+        .card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm); margin-bottom: 24px; }
+        .card-header { padding: 18px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+        .card-icon { width: 30px; height: 30px; background: var(--accent-lt); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+        .card-title { font-size: 15px; font-weight: 700; }
+        .card-body { padding: 20px 24px; }
 
-        .section-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-
-        .section-icon {
-            width: 36px;
-            height: 36px;
-            background: var(--accent-glow);
-            border: 1px solid rgba(124,106,247,0.3);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-        }
-
-        .section-title {
-            font-size: 17px;
-            font-weight: 700;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 160px 1fr 180px auto;
-            gap: 12px;
-            align-items: end;
-        }
-
-        .field-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        label {
-            font-family: var(--font-mono);
-            font-size: 11px;
-            color: var(--muted);
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        input {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            color: var(--text);
-            font-family: var(--font-mono);
-            font-size: 14px;
-            padding: 12px 16px;
-            border-radius: 10px;
-            outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            width: 100%;
-        }
-
-        input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px var(--accent-glow);
-        }
-
-        input[type="date"]::-webkit-calendar-picker-indicator {
-            filter: invert(0.6);
-            cursor: pointer;
-        }
-
-        input::placeholder { color: var(--muted); }
-
-        .btn-add {
-            background: var(--accent);
-            color: white;
-            border: none;
-            font-family: var(--font-display);
-            font-size: 14px;
-            font-weight: 700;
-            padding: 12px 28px;
-            border-radius: 10px;
-            cursor: pointer;
-            letter-spacing: 0.3px;
-            transition: opacity 0.2s, transform 0.1s;
-            white-space: nowrap;
-        }
-
-        .btn-add:hover { opacity: 0.88; transform: translateY(-1px); }
+        .form-row { display: grid; grid-template-columns: 160px 1fr 190px auto; gap: 12px; align-items: end; }
+        .field { display: flex; flex-direction: column; gap: 6px; }
+        label { font-size: 12px; font-weight: 700; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.4px; }
+        input { background: var(--bg); border: 1.5px solid var(--border); color: var(--text); font-family: var(--font); font-size: 14px; font-weight: 500; padding: 10px 14px; border-radius: 10px; outline: none; transition: border-color 0.18s, box-shadow 0.18s, background 0.18s; width: 100%; }
+        input:focus { border-color: var(--accent); background: var(--white); box-shadow: 0 0 0 3px var(--accent-lt); }
+        input::placeholder { color: var(--muted); font-weight: 400; }
+        input[type="date"]::-webkit-calendar-picker-indicator { opacity: 0.5; cursor: pointer; }
+        .btn-add { background: var(--accent); color: #fff; border: none; font-family: var(--font); font-size: 14px; font-weight: 700; padding: 11px 24px; border-radius: 10px; cursor: pointer; white-space: nowrap; transition: background 0.18s, transform 0.12s, box-shadow 0.18s; box-shadow: 0 2px 8px rgba(22,163,74,0.25); }
+        .btn-add:hover { background: #15803d; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(22,163,74,0.35); }
         .btn-add:active { transform: translateY(0); }
 
-        /* EXPENSES TABLE */
-        .expense-section {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            overflow: hidden;
-        }
+        .daily-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; padding: 20px 24px; }
+        .daily-chip { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; display: flex; flex-direction: column; gap: 4px; transition: border-color 0.18s; }
+        .daily-chip:hover { border-color: var(--accent-mid); }
+        .daily-chip-date { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+        .daily-chip-amount { font-size: 16px; font-weight: 700; color: var(--accent); }
 
-        .expense-header {
-            padding: 24px 28px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .expense-count {
-            font-family: var(--font-mono);
-            font-size: 12px;
-            color: var(--muted);
-            background: var(--surface);
-            border: 1px solid var(--border);
-            padding: 4px 12px;
-            border-radius: 100px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        thead th {
-            font-family: var(--font-mono);
-            font-size: 11px;
-            color: var(--muted);
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            text-align: left;
-            padding: 14px 28px;
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-        }
-
-        tbody tr {
-            border-bottom: 1px solid rgba(42, 42, 61, 0.6);
-            transition: background 0.15s;
-        }
-
+        .table-scroll { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        thead th { background: var(--bg); font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 0.8px; text-transform: uppercase; text-align: left; padding: 12px 20px; border-bottom: 1px solid var(--border); }
+        tbody tr { border-bottom: 1px solid var(--border); transition: background 0.12s; }
         tbody tr:last-child { border-bottom: none; }
-        tbody tr:hover { background: rgba(124,106,247,0.04); }
+        tbody tr:hover { background: #f9fafb; }
+        td { padding: 14px 20px; font-size: 14px; font-weight: 500; }
+        .td-id { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+        .category-chip { display: inline-flex; align-items: center; background: var(--accent-lt); color: var(--accent); font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 100px; }
+        .td-amount { font-family: var(--mono); font-size: 14px; font-weight: 600; color: var(--text); }
+        .td-date { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+        .card-footer-count { padding: 12px 20px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted); font-weight: 500; background: var(--bg); border-radius: 0 0 var(--radius) var(--radius); }
+        .empty-state { text-align: center; padding: 50px 20px; color: var(--muted); }
+        .empty-state .e-icon { font-size: 36px; margin-bottom: 10px; }
+        .empty-state p { font-size: 14px; }
 
-        td {
-            padding: 16px 28px;
-            font-size: 14px;
-        }
-
-        td:first-child {
-            font-family: var(--font-mono);
-            color: var(--muted);
-            font-size: 12px;
-        }
-
-        .amount-cell {
-            font-family: var(--font-mono);
-            font-weight: 500;
-            color: var(--green);
-        }
-
-        .category-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: var(--accent-glow);
-            border: 1px solid rgba(124,106,247,0.2);
-            color: var(--accent);
-            font-family: var(--font-mono);
-            font-size: 12px;
-            padding: 4px 12px;
-            border-radius: 100px;
-        }
-
-        .date-cell {
-            font-family: var(--font-mono);
-            font-size: 13px;
-            color: var(--muted);
-        }
-
-        /* Daily Breakdown */
-        .daily-section {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 28px;
-            margin-bottom: 40px;
-        }
-
-        .daily-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 14px 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .daily-row:last-child { border-bottom: none; }
-
-        .daily-date {
-            font-family: var(--font-mono);
-            font-size: 13px;
-            color: var(--muted);
-        }
-
-        .daily-amount {
-            font-family: var(--font-mono);
-            font-size: 15px;
-            font-weight: 500;
-            color: var(--amber);
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--muted);
-        }
-
-        .empty-state .icon { font-size: 40px; margin-bottom: 12px; }
-        .empty-state p { font-size: 14px; font-family: var(--font-mono); }
-
-        @media (max-width: 700px) {
-            header { padding: 20px; }
-            main { padding: 24px 16px; }
-            .stats-grid { grid-template-columns: 1fr; }
-            .form-row { grid-template-columns: 1fr 1fr; }
+        @media (max-width: 680px) {
+            header { padding: 0 16px; }
+            main { padding: 20px 12px 40px; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .stats-grid .stat-card:last-child { grid-column: span 2; }
+            .form-row { grid-template-columns: 1fr 1fr; gap: 10px; }
+            .form-row .field:nth-child(3) { grid-column: span 2; }
             .form-row .btn-add { grid-column: span 2; }
-            thead th:nth-child(1), td:nth-child(1) { display: none; }
+            thead th:first-child, td:first-child { display: none; }
         }
     </style>
 </head>
 <body>
-
 <header>
     <div class="logo">
-        <span class="logo-tag">BCS601 · 4MW23CS130</span>
-        <span class="logo-title">Expense <span>Tracker</span></span>
+        <div class="logo-icon">💸</div>
+        <div class="logo-text">
+            <h1>Expense Tracker</h1>
+            <span>BCS601 · 4MW23CS130</span>
+        </div>
     </div>
-    <div class="date-badge" id="currentDate"></div>
+    <div class="header-date" id="currentDate"></div>
 </header>
 
 <main>
-    <!-- STATS -->
     <div class="stats-grid">
         <div class="stat-card total">
-            <div class="stat-label">All-Time Total</div>
-            <div class="stat-value">
-                <span class="currency">₹</span>
-                {{ "{:,.0f}".format(total) if total else "0" }}
+            <div class="stat-top">
+                <div class="stat-label">All-Time Total</div>
+                <div class="stat-badge">🏦</div>
             </div>
+            <div class="stat-value"><span class="stat-currency">₹</span>{{ "{:,.0f}".format(total) if total else "0" }}</div>
         </div>
         <div class="stat-card today">
-            <div class="stat-label">Today's Spend</div>
-            <div class="stat-value">
-                <span class="currency">₹</span>
-                {{ "{:,.0f}".format(today_total) if today_total else "0" }}
+            <div class="stat-top">
+                <div class="stat-label">Today</div>
+                <div class="stat-badge">📅</div>
             </div>
+            <div class="stat-value"><span class="stat-currency">₹</span>{{ "{:,.0f}".format(today_total) if today_total else "0" }}</div>
         </div>
         <div class="stat-card week">
-            <div class="stat-label">Last 7 Days</div>
-            <div class="stat-value">
-                <span class="currency">₹</span>
-                {{ "{:,.0f}".format(week_total) if week_total else "0" }}
+            <div class="stat-top">
+                <div class="stat-label">Last 7 Days</div>
+                <div class="stat-badge">📊</div>
             </div>
+            <div class="stat-value"><span class="stat-currency">₹</span>{{ "{:,.0f}".format(week_total) if week_total else "0" }}</div>
         </div>
     </div>
 
-    <!-- ADD EXPENSE FORM -->
-    <div class="add-section">
-        <div class="section-header">
-            <div class="section-icon">＋</div>
-            <div class="section-title">Add New Expense</div>
+    <div class="card">
+        <div class="card-header">
+            <div class="card-icon">＋</div>
+            <span class="card-title">Add New Expense</span>
         </div>
-        <form method="POST">
-            <div class="form-row">
-                <div class="field-group">
-                    <label for="amount">Amount (₹)</label>
-                    <input type="number" id="amount" name="amount" placeholder="0.00" required min="0" step="0.01">
+        <div class="card-body">
+            <form method="POST">
+                <div class="form-row">
+                    <div class="field">
+                        <label for="amount">Amount (₹)</label>
+                        <input type="number" id="amount" name="amount" placeholder="0.00" required min="0" step="0.01">
+                    </div>
+                    <div class="field">
+                        <label for="category">Category</label>
+                        <input type="text" id="category" name="category" placeholder="Food, Travel, Shopping…" required>
+                    </div>
+                    <div class="field">
+                        <label for="date">Date</label>
+                        <input type="date" id="date" name="date" required>
+                    </div>
+                    <button type="submit" class="btn-add">+ Add</button>
                 </div>
-                <div class="field-group">
-                    <label for="category">Category</label>
-                    <input type="text" id="category" name="category" placeholder="e.g. Food, Travel, Shopping..." required>
-                </div>
-                <div class="field-group">
-                    <label for="date">Date</label>
-                    <input type="date" id="date" name="date" required>
-                </div>
-                <button type="submit" class="btn-add">Add →</button>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 
-    <!-- DAILY BREAKDOWN -->
     {% if daily_totals %}
-    <div class="daily-section">
-        <div class="section-header">
-            <div class="section-icon">📅</div>
-            <div class="section-title">Daily Breakdown</div>
+    <div class="card">
+        <div class="card-header">
+            <div class="card-icon">📆</div>
+            <span class="card-title">Daily Breakdown</span>
         </div>
-        {% for day in daily_totals %}
-        <div class="daily-row">
-            <span class="daily-date">{{ day[0] }}</span>
-            <span class="daily-amount">₹ {{ "{:,.0f}".format(day[1]) }}</span>
+        <div class="daily-grid">
+            {% for day in daily_totals %}
+            <div class="daily-chip">
+                <span class="daily-chip-date">{{ day[0] }}</span>
+                <span class="daily-chip-amount">₹ {{ "{:,.0f}".format(day[1]) }}</span>
+            </div>
+            {% endfor %}
         </div>
-        {% endfor %}
     </div>
     {% endif %}
 
-    <!-- EXPENSES TABLE -->
-    <div class="expense-section">
-        <div class="expense-header">
-            <div class="section-header" style="margin-bottom:0">
-                <div class="section-icon">📋</div>
-                <div class="section-title">All Expenses</div>
-            </div>
-            <span class="expense-count">{{ expenses|length }} entries</span>
+    <div class="card">
+        <div class="card-header">
+            <div class="card-icon">🧾</div>
+            <span class="card-title">All Expenses</span>
         </div>
-
         {% if expenses %}
-        <table>
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Category</th>
-                    <th>Amount</th>
-                    <th>Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for e in expenses %}
-                <tr>
-                    <td>{{ e[0] }}</td>
-                    <td><span class="category-pill">{{ e[2] }}</span></td>
-                    <td class="amount-cell">₹ {{ "{:,.0f}".format(e[1]) }}</td>
-                    <td class="date-cell">{{ e[3] }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="table-scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Category</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for e in expenses %}
+                    <tr>
+                        <td class="td-id">{{ e[0] }}</td>
+                        <td><span class="category-chip">{{ e[2] }}</span></td>
+                        <td class="td-amount">₹ {{ "{:,.0f}".format(e[1]) }}</td>
+                        <td class="td-date">{{ e[3] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer-count">{{ expenses|length }} expense{{ 's' if expenses|length != 1 else '' }} recorded</div>
         {% else %}
         <div class="empty-state">
-            <div class="icon">💸</div>
-            <p>No expenses yet. Add your first one above!</p>
+            <div class="e-icon">🧾</div>
+            <p>No expenses yet — add your first one above!</p>
         </div>
         {% endif %}
     </div>
 </main>
 
 <script>
-    // Set today's date in header
-    const now = new Date();
+    const d = new Date();
     document.getElementById('currentDate').textContent =
-        now.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
-
-    // Default date input to today
-    const dateInput = document.getElementById('date');
-    if (dateInput) {
-        dateInput.valueAsDate = new Date();
-    }
+        d.toLocaleDateString('en-IN', { weekday:'short', day:'numeric', month:'short', year:'numeric' });
+    document.getElementById('date').valueAsDate = new Date();
 </script>
 </body>
 </html>
