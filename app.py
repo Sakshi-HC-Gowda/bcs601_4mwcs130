@@ -7,6 +7,25 @@ app = Flask(__name__)
 def get_db():
     return sqlite3.connect("database.db")
 
+# ✅ ADD THIS FUNCTION
+def init_db():
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS expenses (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        amount INTEGER,
+        category TEXT,
+        date TEXT
+    )
+    """)
+    conn.commit()
+    conn.close()
+
+# ✅ CALL IT HERE (important for Render)
+init_db()
+
+
 @app.route("/", methods=["GET", "POST"])
 def index():
     conn = get_db()
